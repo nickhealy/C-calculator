@@ -4,6 +4,10 @@
 #include <stdlib.h>
 
 #define BUFFER_SIZE 50
+#define MAX_TOKENS 3
+#define TOKEN_DELIMS " \n\r\t"
+
+static char *operations = "*/+-";
 
 static void ready_for_input()
 {
@@ -34,6 +38,8 @@ static char *read_line()
   int c;
   int len = 0;
 
+  ready_for_input();
+
   while (true)
   {
     c = getchar();
@@ -44,9 +50,7 @@ static char *read_line()
       while (c != EOF && c != '\n')
         c = getchar();
       printf("Calculations must be under 100 characters long.\n");
-      memset(buffer, 0, sizeof(buffer));
-      len = 0;
-      ready_for_input();
+      return NULL;
     }
     else if (c == EOF || c == '\n')
     {
@@ -59,11 +63,55 @@ static char *read_line()
   }
 }
 
+static char **parse_args(char *line)
+{
+  char **tokens = (char **)malloc(MAX_TOKENS * sizeof(char **));
+  int position = 0;
+  char *token;
+
+  if (!tokens)
+  {
+    fprintf(stderr, "calculator: allocation error");
+    exit(EXIT_FAILURE);
+  }
+
+  token = strtok(line, TOKEN_DELIMS);
+  while (token != NULL)
+  {
+    if (position >= MAX_TOKENS)
+    {
+      printf("Only one operation allowed at a time. Please try again.\n");
+      free(tokens);
+      return NULL;
+    }
+
+    tokens[position++] = token;
+    token = strtok(NULL, TOKEN_DELIMS);
+  }
+
+  // we do not need the line anymore, so we free it
+  free(line);
+  return tokens;
+}
+
 static void start_calculator()
 {
-  ready_for_input();
-  char *line = read_line();
-  printf("input received : %s", line);
+  char *line;
+  char **tokens;
+  while (true)
+  {
+    line = read_line();
+    if (!line)
+    {
+      continue;
+    }
+
+    tokens = parse_args(line);
+    if (!tokens)
+    {
+      continue;
+    }
+  }
 }
 
 int main(int argc, char *argv[])
