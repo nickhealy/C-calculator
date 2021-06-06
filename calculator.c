@@ -30,26 +30,27 @@ static char *as_string(char buffer[], int size)
 static char *read_line()
 {
   // put the input into a buffer
-  char buffer[BUFFER_SIZE], c;
+  char buffer[BUFFER_SIZE];
+  int c;
   int len = 0;
 
   while (true)
   {
     c = getchar();
-    if (c == EOF || c == '\n')
+
+    if (len >= BUFFER_SIZE)
     {
-      // reset if input has exceeded buffer length
-      if (len > BUFFER_SIZE)
-      {
-        printf("Calculations must be under 100 characters long.\n");
-        memset(buffer, 0, sizeof(buffer));
-        len = 0;
-        ready_for_input();
-      }
-      else
-      {
-        return as_string(buffer, len);
-      }
+      // drop everything until EOF or newline
+      while (c != EOF && c != '\n')
+        c = getchar();
+      printf("Calculations must be under 100 characters long.\n");
+      memset(buffer, 0, sizeof(buffer));
+      len = 0;
+      ready_for_input();
+    }
+    else if (c == EOF || c == '\n')
+    {
+      return as_string(buffer, len);
     }
     else
     {
