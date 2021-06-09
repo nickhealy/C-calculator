@@ -1,3 +1,5 @@
+#include "utils.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
@@ -25,23 +27,6 @@ static const char *const operation_tokens[] = {
 static void ready_for_input()
 {
   printf(">  ");
-}
-
-static char *as_string(char buffer[], int size)
-{
-  char *result = (char *)malloc((size + 1) * sizeof(char));
-  if (!result)
-  {
-    fprintf(stderr, "calculator: allocation error");
-    exit(EXIT_FAILURE);
-  }
-
-  for (int i = 0; i < size; i++)
-  {
-    result[i] = buffer[i];
-  }
-  result[size] = '\0';
-  return result;
 }
 
 static char *read_line()
@@ -105,21 +90,6 @@ static char **split_args(char *line)
   // we do not need the line anymore, so we free it
   free(line);
   return tokens;
-}
-
-int to_int(char *character)
-{
-  // '1' -> 1
-  // '564' -> 564
-  int i;
-  int converted = 0;
-
-  for (i = 0; character[i] != '\0'; ++i)
-  {
-    converted = converted * 10 + character[i] - '0';
-  }
-
-  return converted;
 }
 
 int calculate(char **tokens)
