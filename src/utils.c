@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <math.h>
 
 char *as_string(char buffer[], int size)
 {
@@ -18,19 +20,4 @@ char *as_string(char buffer[], int size)
   }
   result[size] = '\0';
   return result;
-}
-
-int to_int(char *character)
-{
-  // '1' -> 1
-  // '564' -> 564
-  int i;
-  int converted = 0;
-
-  for (i = 0; character[i] != '\0'; ++i)
-  {
-    converted = converted * 10 + character[i] - '0';
-  }
-
-  return converted;
 }

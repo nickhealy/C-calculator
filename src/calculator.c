@@ -92,14 +92,14 @@ static char **split_args(char *line)
   return tokens;
 }
 
-int calculate(char **tokens)
+float calculate(char **tokens)
 {
-  int result;
-  int left, right;
+  float result;
+  float left, right;
   char *operation = tokens[1];
 
-  left = to_int(tokens[0]);
-  right = to_int(tokens[2]);
+  left = strtod(tokens[0], NULL);
+  right = strtod(tokens[2], NULL);
 
   if (strcmp(operation, operation_tokens[ADDITION]) == 0)
   {
@@ -126,7 +126,7 @@ static void start_calculator()
 {
   char *line;
   char **tokens;
-  int result;
+  float result;
   while (true)
   {
     line = read_line();
@@ -142,7 +142,7 @@ static void start_calculator()
     }
 
     result = calculate(tokens);
-    printf("Result is: %d\n", result);
+    printf("Result is: %g\n", result);
   }
 }
 
