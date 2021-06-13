@@ -36,7 +36,7 @@ CFLAGS=-I. -I$(PATHU) -I$(PATHS) -DTEST
 calculator: $(PATHS)*.c 
 	$(COMPILE) -o $(PATHB)$@.$(TARGET_EXTENSION) $< -I.
 
-RESULTS = $(patsubst $(PATHT)Test%.c,$(PATHR)Test%.txt,$(SRCT) )
+RESULTS = $(patsubst $(PATHT)test_%.c,$(PATHR)test_%.txt,$(SRCT))
 
 PASSED = `grep -s PASS $(PATHR)*.txt`
 FAIL = `grep -s FAIL $(PATHR)*.txt`
@@ -54,7 +54,7 @@ test: $(BUILD_PATHS) $(RESULTS)
 $(PATHR)%.txt: $(PATHB)%.$(TARGET_EXTENSION)
 	-./$< > $@ 2>&1
 
-$(PATHB)Test%.$(TARGET_EXTENSION): $(PATHO)Test%.o $(PATHO)%.o $(PATHU)unity.o #$(PATHD)Test%.d
+$(PATHB)test_%.$(TARGET_EXTENSION): $(PATHO)test_%.o $(PATHO)%.o $(PATHU)unity.o #$(PATHD)Test%.d
 	$(LINK) -o $@ $^
 
 $(PATHO)%.o:: $(PATHT)%.c
