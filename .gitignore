@@ -1,5 +1,6 @@
 *.out
 build/
 
-unity/
+test/vendor
 .vscode
+*.dSYM

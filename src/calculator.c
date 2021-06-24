@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "operators.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -8,21 +9,6 @@
 #define BUFFER_SIZE 50
 #define MAX_TOKENS 3
 #define TOKEN_DELIMS " \n\r\t"
-
-enum operations
-{
-  ADDITION = 0,
-  SUBTRACTION,
-  MULTIPLICATION,
-  DIVISION
-};
-
-static const char *const operation_tokens[] = {
-    [ADDITION] = "+",
-    [SUBTRACTION] = "-",
-    [MULTIPLICATION] = "*",
-    [DIVISION] = "/",
-};
 
 static void ready_for_input()
 {
@@ -101,21 +87,25 @@ float calculate(char **tokens)
   left = strtod(tokens[0], NULL);
   right = strtod(tokens[2], NULL);
 
-  if (strcmp(operation, operation_tokens[ADDITION]) == 0)
+  if (*operation == get_operator(ADDITION).op_symbol)
   {
     result = left + right;
   }
-  else if (strcmp(operation, operation_tokens[SUBTRACTION]) == 0)
+  else if (*operation == get_operator(SUBTRACTION).op_symbol)
   {
     result = left - right;
   }
-  else if (strcmp(operation, operation_tokens[MULTIPLICATION]) == 0)
+  else if (*operation == get_operator(MULTIPLICATION).op_symbol)
   {
     result = left * right;
   }
-  else if (strcmp(operation, operation_tokens[DIVISION]) == 0)
+  else if (*operation == get_operator(DIVISION).op_symbol)
   {
     result = left / right;
+  }
+  else
+  {
+    return 0;
   }
 
   free(tokens);
@@ -146,7 +136,7 @@ static void start_calculator()
   }
 }
 
-int main(int argc, char *argv[])
+int main()
 {
   start_calculator();
 }

@@ -1,5 +1,5 @@
-#include "unity.h"
-#include "toPostfix.h"
+#include "vendor/unity.h"
+#include "../src/toPostfix.h"
 
 #include <stdio.h>
 
@@ -21,7 +21,6 @@ void test_convert_addition(void)
 }
 void test_convert_addition_subtraction(void)
 {
-  TEST_IGNORE();
   char *infix[] = {"4", "+", "70", "-", "3"};
   char *postfix[] = {"4", "70", "+", "3", "-"};
   TEST_ASSERT_EQUAL_STRING_ARRAY(postfix, to_postfix(infix, 5), 5);

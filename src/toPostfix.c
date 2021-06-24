@@ -1,12 +1,13 @@
 #include "toPostfix.h"
+#include "operators.h"
 
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include <stdbool.h>
+static const char *operators = "^*/+-";
 
-static const char *operators = "+-*/";
 static const char *valid_nums = "1234567890.";
 
 static bool is_in_group(char candidate, const char *group)
@@ -53,6 +54,14 @@ static bool is_num(char *candidate)
   return true;
 }
 
+bool should_pop_operator(char *stack_operator, char *curr_operator)
+{
+  operator curr_op_data = get_operator(operation_key(*curr_operator));
+  operator stack_op_data = get_operator(operation_key(*stack_operator));
+
+  return is_operator(curr_operator) && ((curr_op_data.precedence <= stack_op_data.precedence && curr_op_data.associativity == LEFT) || (curr_op_data.precedence < stack_op_data.precedence && curr_op_data.associativity == RIGHT));
+}
+
 // this is an implementation of Djikstra's Shunting Yard Algorithm
 
 char **to_postfix(char **infix, int length)
@@ -74,6 +83,10 @@ char **to_postfix(char **infix, int length)
     }
     else if (is_operator(current_token))
     {
+      while (operator_position > 0 && should_pop_operator(operator_stack[operator_position], current_token))
+      {
+        output[output_position++] = operator_stack[--operator_position];
+      }
       operator_stack[operator_position++] = current_token;
     }
     else if (is_l_parens(current_token))
