@@ -83,7 +83,7 @@ char **to_postfix(char **infix, int length)
     }
     else if (is_operator(current_token))
     {
-      while (operator_position > 0 && should_pop_operator(operator_stack[operator_position], current_token))
+      while (operator_position > 0 && should_pop_operator(operator_stack[operator_position - 1], current_token))
       {
         output[output_position++] = operator_stack[--operator_position];
       }
