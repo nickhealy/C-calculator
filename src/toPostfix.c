@@ -45,7 +45,7 @@ bool should_pop_operator(char *stack_operator, char *curr_operator) {
   operator curr_op_data = get_operator(operation_key(*curr_operator));
   operator stack_op_data = get_operator(operation_key(*stack_operator));
 
-  return is_operator(curr_operator) &&
+  return is_operator(curr_operator) && !is_l_parens(stack_operator) &&
          ((curr_op_data.precedence <= stack_op_data.precedence &&
            curr_op_data.associativity == LEFT) ||
           (curr_op_data.precedence < stack_op_data.precedence &&
@@ -77,6 +77,19 @@ char **to_postfix(char **infix, int length) {
     } else if (is_l_parens(current_token)) {
       operator_stack[operator_position++] = current_token;
     } else if (is_r_parens(current_token)) {
+      while (operator_position > 0 &&
+             !is_l_parens(operator_stack[operator_position - 1])) {
+        output[output_position++] = operator_stack[--operator_position];
+      }
+      // if we have not found a left parens by now, then we had mismatched
+      // parens
+      if (operator_position == 0) {
+        fprintf(stderr, "Mismatched parenthesis detected\n");
+        return NULL;
+      }
+
+      // discard
+      operator_position--;
     }
   }
 
