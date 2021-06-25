@@ -1,22 +1,18 @@
-#include "utils.h"
-#include "operators.h"
-
-#include <stdio.h>
-#include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include "operators.h"
+#include "utils.h"
 
 #define BUFFER_SIZE 50
 #define MAX_TOKENS 3
 #define TOKEN_DELIMS " \n\r\t"
 
-static void ready_for_input()
-{
-  printf(">  ");
-}
+static void ready_for_input() { printf(">  "); }
 
-static char *read_line()
-{
+static char *read_line() {
   // put the input into a buffer
   char buffer[BUFFER_SIZE];
   int c;
@@ -24,46 +20,35 @@ static char *read_line()
 
   ready_for_input();
 
-  while (true)
-  {
+  while (true) {
     c = getchar();
 
-    if (len >= BUFFER_SIZE)
-    {
+    if (len >= BUFFER_SIZE) {
       // drop everything until EOF or newline
-      while (c != EOF && c != '\n')
-        c = getchar();
+      while (c != EOF && c != '\n') c = getchar();
       printf("Calculations must be under 100 characters long.\n");
       return NULL;
-    }
-    else if (c == EOF || c == '\n')
-    {
+    } else if (c == EOF || c == '\n') {
       return as_string(buffer, len);
-    }
-    else
-    {
+    } else {
       buffer[len++] = c;
     }
   }
 }
 
-static char **split_args(char *line)
-{
+static char **split_args(char *line) {
   char **tokens = (char **)malloc(MAX_TOKENS * sizeof(char **));
   int position = 0;
   char *token;
 
-  if (!tokens)
-  {
+  if (!tokens) {
     fprintf(stderr, "calculator: allocation error");
     exit(EXIT_FAILURE);
   }
 
   token = strtok(line, TOKEN_DELIMS);
-  while (token != NULL)
-  {
-    if (position >= MAX_TOKENS)
-    {
+  while (token != NULL) {
+    if (position >= MAX_TOKENS) {
       printf("Only one operation allowed at a time. Please try again.\n");
       free(tokens);
       return NULL;
@@ -78,8 +63,7 @@ static char **split_args(char *line)
   return tokens;
 }
 
-float calculate(char **tokens)
-{
+float calculate(char **tokens) {
   float result;
   float left, right;
   char *operation = tokens[1];
@@ -87,24 +71,15 @@ float calculate(char **tokens)
   left = strtod(tokens[0], NULL);
   right = strtod(tokens[2], NULL);
 
-  if (*operation == get_operator(ADDITION).op_symbol)
-  {
+  if (*operation == get_operator(ADDITION).op_symbol) {
     result = left + right;
-  }
-  else if (*operation == get_operator(SUBTRACTION).op_symbol)
-  {
+  } else if (*operation == get_operator(SUBTRACTION).op_symbol) {
     result = left - right;
-  }
-  else if (*operation == get_operator(MULTIPLICATION).op_symbol)
-  {
+  } else if (*operation == get_operator(MULTIPLICATION).op_symbol) {
     result = left * right;
-  }
-  else if (*operation == get_operator(DIVISION).op_symbol)
-  {
+  } else if (*operation == get_operator(DIVISION).op_symbol) {
     result = left / right;
-  }
-  else
-  {
+  } else {
     return 0;
   }
 
@@ -112,22 +87,18 @@ float calculate(char **tokens)
   return result;
 }
 
-static void start_calculator()
-{
+static void start_calculator() {
   char *line;
   char **tokens;
   float result;
-  while (true)
-  {
+  while (true) {
     line = read_line();
-    if (!line)
-    {
+    if (!line) {
       continue;
     }
 
     tokens = split_args(line);
-    if (!tokens)
-    {
+    if (!tokens) {
       continue;
     }
 
@@ -136,7 +107,4 @@ static void start_calculator()
   }
 }
 
-int main()
-{
-  start_calculator();
-}
+int main() { start_calculator(); }

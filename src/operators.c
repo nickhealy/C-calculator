@@ -14,13 +14,10 @@ static operator operator_data[] = {
     [SUBTRACTION] = {LEFT, LOW, '-'},
 };
 
-int operation_key(char token)
-{
+int operation_key(char token) {
   int key;
-  for (key = 0; key < NUM_OPERATIONS; ++key)
-  {
-    if (operator_data[key].op_symbol == token)
-    {
+  for (key = 0; key < NUM_OPERATIONS; ++key) {
+    if (operator_data[key].op_symbol == token) {
       return key;
     }
   }
@@ -28,7 +25,4 @@ int operation_key(char token)
   return OP_NOT_FOUND;
 }
 
-operator get_operator(int key)
-{
-  return operator_data[key];
-}
+operator get_operator(int key) { return operator_data[key]; }
