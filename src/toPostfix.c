@@ -84,7 +84,9 @@ char **to_postfix(char **infix, int length) {
       // if we have not found a left parens by now, then we had mismatched
       // parens
       if (operator_position == 0) {
-        fprintf(stderr, "Mismatched parenthesis detected\n");
+        fprintf(stderr,
+                "Mismatched parenthesis detected. Found \")\" without matching "
+                "\")\".\n");
         return NULL;
       }
 
@@ -94,7 +96,14 @@ char **to_postfix(char **infix, int length) {
   }
 
   while (operator_position > 0) {
-    output[output_position++] = operator_stack[--operator_position];
+    current_token = operator_stack[--operator_position];
+    if (is_l_parens(current_token)) {
+      fprintf(stderr,
+              "Mismatched parenthesis detected. Found \"(\" without matching "
+              "\")\".\n");
+      return NULL;
+    }
+    output[output_position++] = current_token;
   }
 
   return output;
