@@ -7,11 +7,18 @@
 
 #include "operators.h"
 
-static const char *operators = "^*/+-";
+static bool should_pop_operator(const char *stack_operator,
+                                const char *curr_operator);
+static bool is_in_group(const char candidate, const char *group);
+static bool is_operator(const char *token);
+static bool is_l_parens(const char *token);
+static bool is_r_parens(const char *token);
+static bool is_num(const char *candidate);
 
+static const char *operators = "^*/+-";
 static const char *valid_nums = "1234567890.";
 
-static bool is_in_group(char candidate, const char *group) {
+static bool is_in_group(const char candidate, const char *group) {
   int i;
   for (i = 0; group[i] != '\0'; ++i) {
     if (group[i] == candidate) {
@@ -21,13 +28,15 @@ static bool is_in_group(char candidate, const char *group) {
   return false;
 }
 
-static bool is_operator(char *token) { return is_in_group(*token, operators); }
+static bool is_operator(const char *token) {
+  return is_in_group(*token, operators);
+}
 
-static bool is_l_parens(char *token) { return *token == '('; }
+static bool is_l_parens(const char *token) { return *token == '('; }
 
-static bool is_r_parens(char *token) { return *token == ')'; }
+static bool is_r_parens(const char *token) { return *token == ')'; }
 
-static bool is_num(char *candidate) {
+static bool is_num(const char *candidate) {
   // for now this will work -- in the future we will want better error handling
   // with validation, etc.
   int i;
@@ -41,7 +50,8 @@ static bool is_num(char *candidate) {
   return true;
 }
 
-bool should_pop_operator(char *stack_operator, char *curr_operator) {
+static bool should_pop_operator(const char *stack_operator,
+                                const char *curr_operator) {
   operator curr_op_data = get_operator(operation_key(*curr_operator));
   operator stack_op_data = get_operator(operation_key(*stack_operator));
 
@@ -54,14 +64,14 @@ bool should_pop_operator(char *stack_operator, char *curr_operator) {
 
 // this is an implementation of Djikstra's Shunting Yard Algorithm
 
-char **to_postfix(char **infix, int length) {
+const char **to_postfix(const char **infix, int length) {
   int read_count = 0;
   int output_position = 0;
   int operator_position = 0;
 
-  char **output = malloc(length * sizeof(char *));
-  char *operator_stack[length];
-  char *current_token;
+  const char **output = malloc(length * sizeof(char *));
+  const char *operator_stack[length];
+  const char *current_token;
 
   while (read_count < length) {
     current_token = infix[read_count++];

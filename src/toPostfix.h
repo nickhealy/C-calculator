@@ -1,6 +1,6 @@
 #ifndef TO_POSTFIX
 #define TO_POSTFIX
 
-char **to_postfix(char **infix, int length);
+const char **to_postfix(const char **infix, int length);
 
 #endif

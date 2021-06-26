@@ -1,3 +1,5 @@
+#include "calculator.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +11,11 @@
 #define BUFFER_SIZE 50
 #define MAX_TOKENS 3
 #define TOKEN_DELIMS " \n\r\t"
+
+static float calculate(char **tokens);
+static char *read_line(void);
+static void ready_for_input(void);
+static char **split_args(char *line);
 
 static void ready_for_input() { printf(">  "); }
 
@@ -63,7 +70,7 @@ static char **split_args(char *line) {
   return tokens;
 }
 
-float calculate(char **tokens) {
+static float calculate(char **tokens) {
   float result;
   float left, right;
   char *operation = tokens[1];
@@ -87,7 +94,7 @@ float calculate(char **tokens) {
   return result;
 }
 
-static void start_calculator() {
+void start_calculator() {
   char *line;
   char **tokens;
   float result;
@@ -106,5 +113,3 @@ static void start_calculator() {
     printf("Result is: %g\n", result);
   }
 }
-
-int main() { start_calculator(); }
