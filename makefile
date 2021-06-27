@@ -96,7 +96,7 @@ INC_DIRS=-Isrc -I$(PATH_UNITY_ROOT)src -I$(PATH_UNITY_ROOT)extras/fixture/src
 # we do not want to pull in Unity memory extra by default 
 SYMBOLS=-DUNITY_FIXTURE_NO_EXTRAS
 
-all: clean default print
+all: clean default
 
 RESULTS=$(RESULTS_TEST)
 
@@ -116,22 +116,7 @@ $(PATH_BUILD_DEPENDS):
 
 $(RESULTS_TEST):
 	$(COMPILE) $(CFLAGS) $(INC_DIRS) $(SYMBOLS) $(SRC_FILES1) -o $(TARGET1)
-	./$(TARGET1) -v > $@ 2>&1
-
-PASSED = `grep -s PASS $(RESULTS_TEST)`
-FAILED = `grep -s FAIL $(RESULTS_TEST)`
-IGNORED = `grep -s IGNORE $(RESULTS_TEST)`
-
-.PHONY:print
-print:
-	@echo "=============\nRUNNING TESTS:\n============="
-	@echo "-------------\nPASSED:\n--------------"
-	@echo "$(PASSED)"
-	@echo "-------------\nFAILED:\n--------------"
-	@echo "$(FAILED)"
-	@echo "-------------\nIGNORED:\n--------------"
-	@echo "$(IGNORED)"
-	@echo "\nDONE"
+	./$(TARGET1) -v 
 
 .PHONY:clean
 clean:
