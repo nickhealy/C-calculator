@@ -69,7 +69,9 @@ const char **to_postfix(const char **infix, int length) {
   int output_position = 0;
   int operator_position = 0;
 
-  const char **output = malloc(length * sizeof(char *));
+  // we add one to account for NULL pointer at end, in case there are no
+  // parenthesis in the array that get eliminated
+  const char **output = malloc((length + 1) * sizeof(char *));
   const char *operator_stack[length];
   const char *current_token;
 
@@ -115,6 +117,9 @@ const char **to_postfix(const char **infix, int length) {
     }
     output[output_position++] = current_token;
   }
+
+  // add null pointer so we know where array ends
+  output[output_position] = (char *)NULL;
 
   return output;
 }
