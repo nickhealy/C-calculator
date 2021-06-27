@@ -6,49 +6,10 @@
 #include <string.h>
 
 #include "operators.h"
+#include "utils.h"
 
 static bool should_pop_operator(const char *stack_operator,
                                 const char *curr_operator);
-static bool is_in_group(const char candidate, const char *group);
-static bool is_operator(const char *token);
-static bool is_l_parens(const char *token);
-static bool is_r_parens(const char *token);
-static bool is_num(const char *candidate);
-
-static const char *operators = "^*/+-";
-static const char *valid_nums = "1234567890.";
-
-static bool is_in_group(const char candidate, const char *group) {
-  int i;
-  for (i = 0; group[i] != '\0'; ++i) {
-    if (group[i] == candidate) {
-      return true;
-    }
-  }
-  return false;
-}
-
-static bool is_operator(const char *token) {
-  return is_in_group(*token, operators);
-}
-
-static bool is_l_parens(const char *token) { return *token == '('; }
-
-static bool is_r_parens(const char *token) { return *token == ')'; }
-
-static bool is_num(const char *candidate) {
-  // for now this will work -- in the future we will want better error handling
-  // with validation, etc.
-  int i;
-  for (i = 0; candidate[i] != '\0'; ++i) {
-    if (is_in_group(candidate[i], valid_nums)) {
-      continue;
-    }
-    return false;
-  }
-
-  return true;
-}
 
 static bool should_pop_operator(const char *stack_operator,
                                 const char *curr_operator) {
