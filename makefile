@@ -84,17 +84,21 @@ SOURCE_APP = $(wildcard $(PATH_APP_SRC)*.c)
 RESULTS_TEST = $(PATH_BUILD_RESULTS)results_tests.txt
 
 TARGET_BASE1=all_tests
+TARGET_BASE2=calculator
 TARGET1 = $(PATH_BUILD)$(TARGET_BASE1)$(TARGET_EXTENSION)
+TARGET2 = $(PATH_BUILD)$(TARGET_BASE2)$(TARGET_EXTENSION)
 SRC_FILES1=\
   $(PATH_UNITY_ROOT)src/unity.c \
   $(PATH_UNITY_ROOT)extras/fixture/src/unity_fixture.c \
   $(SOURCE_APP) \
   $(SOURCE_TEST) \
   $(SOURCE_TEST_RUNNERS)
+SRC_FILES2=$(SOURCE_APP) 
 
 INC_DIRS=-Isrc -I$(PATH_UNITY_ROOT)src -I$(PATH_UNITY_ROOT)extras/fixture/src
 # we do not want to pull in Unity memory extra by default 
 SYMBOLS=-DUNITY_FIXTURE_NO_EXTRAS
+PRODUCTION=-DPRODUCTION_BUILD
 
 all: clean default
 
@@ -121,3 +125,8 @@ $(RESULTS_TEST):
 .PHONY:clean
 clean:
 	$(CLEANUP_DIR) $(PATH_BUILD)
+
+.PHONY:calculator 
+calculator: 
+	$(COMPILE) $(CFLAGS) $(INC_DIRS) $(SYMBOLS) $(PRODUCTION) $(SRC_FILES2) -o $(TARGET2)
+	./$(TARGET2)

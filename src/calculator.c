@@ -5,19 +5,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "eval_postfix.h"
 #include "operators.h"
+#include "toPostfix.h"
 #include "utils.h"
 
 #define BUFFER_SIZE 50
-#define MAX_TOKENS 3
+#define MAX_TOKENS 30
 #define TOKEN_DELIMS " \n\r\t"
 
-static float calculate(char **tokens);
 static char *read_line(void);
 static void ready_for_input(void);
-static char **split_args(char *line);
 
 static void ready_for_input() { printf(">  "); }
+
+// for keeping track of how many tokens we are evaluating
+static int num_tokens = 0;
 
 static char *read_line() {
   // put the input into a buffer
@@ -43,8 +46,8 @@ static char *read_line() {
   }
 }
 
-static char **split_args(char *line) {
-  char **tokens = (char **)malloc(MAX_TOKENS * sizeof(char **));
+const char **split_args(char *line) {
+  const char **tokens = (const char **)malloc(MAX_TOKENS * sizeof(char **));
   int position = 0;
   char *token;
 
@@ -54,15 +57,18 @@ static char **split_args(char *line) {
   }
 
   token = strtok(line, TOKEN_DELIMS);
+
   while (token != NULL) {
     if (position >= MAX_TOKENS) {
-      printf("Only one operation allowed at a time. Please try again.\n");
+      // TODO: make this dynamically sizing buffer
+      printf("Must use fewer than 30 tokens. Please try again.\n");
       free(tokens);
       return NULL;
     }
 
     tokens[position++] = token;
     token = strtok(NULL, TOKEN_DELIMS);
+    num_tokens++;
   }
 
   // we do not need the line anymore, so we free it
@@ -70,33 +76,23 @@ static char **split_args(char *line) {
   return tokens;
 }
 
-static float calculate(char **tokens) {
+float calculate(const char **infix_expression, int expression_length) {
+  const char **postfix_expression =
+      to_postfix(infix_expression, expression_length);
   float result;
-  float left, right;
-  char *operation = tokens[1];
-
-  left = strtod(tokens[0], NULL);
-  right = strtod(tokens[2], NULL);
-
-  if (*operation == get_operator(ADDITION).op_symbol) {
-    result = left + right;
-  } else if (*operation == get_operator(SUBTRACTION).op_symbol) {
-    result = left - right;
-  } else if (*operation == get_operator(MULTIPLICATION).op_symbol) {
-    result = left * right;
-  } else if (*operation == get_operator(DIVISION).op_symbol) {
-    result = left / right;
-  } else {
-    return 0;
+  if (!postfix_expression) {
+    fprintf(stderr, "Could not convert to postfix\n");
+    exit(EXIT_FAILURE);
   }
 
-  free(tokens);
+  result = eval_postfix(postfix_expression);
+
   return result;
 }
 
 void start_calculator() {
   char *line;
-  char **tokens;
+  const char **tokens;
   float result;
   while (true) {
     line = read_line();
@@ -109,7 +105,7 @@ void start_calculator() {
       continue;
     }
 
-    result = calculate(tokens);
+    result = calculate(tokens, num_tokens);
     printf("Result is: %g\n", result);
   }
 }
