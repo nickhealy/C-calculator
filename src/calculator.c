@@ -7,12 +7,14 @@
 
 #include "eval_postfix.h"
 #include "operators.h"
+#include "split_args.h"
 #include "toPostfix.h"
 #include "utils.h"
 
 #define BUFFER_SIZE 50
 #define MAX_TOKENS 30
 #define TOKEN_DELIMS " \n\r\t"
+#define last_index(current_index) (current_index > 0 ? current_index - 1 : 0)
 
 static char *read_line(void);
 static void ready_for_input(void);
@@ -45,82 +47,6 @@ static char *read_line() {
     }
   }
 }
-
-const char **split_args(char *line, int *num_tokens) {
-  const char **tokens = (const char **)malloc(MAX_TOKENS * sizeof(char **));
-  char current_char;
-  char current_token[50] = {};
-  int pos_in_token = 0, pos_in_tokens = 0, read_count = 0;
-
-  while ((current_char = line[read_count++]) != '\0') {
-    // a negative sign should count as part of a single token
-    if ((current_char == '-' && pos_in_token == 0) ||
-        (current_char >= '0' && current_char <= '9')) {
-      current_token[pos_in_token++] = current_char;
-      continue;
-    }
-
-    if (is_l_parens(&current_char) || is_r_parens(&current_char) ||
-        is_operator(&current_char)) {
-      // if something is in token, add it, then add parens
-      if (pos_in_token > 0) {
-        tokens[pos_in_tokens++] = as_string(current_token, pos_in_token);
-        (*num_tokens)++;
-      }
-      tokens[pos_in_tokens++] = as_string(&current_char, 1);
-      // reset temp token, increment total num tokens
-      pos_in_token = 0;
-      (*num_tokens)++;
-      continue;
-    }
-
-    if (current_char == ' ') {
-      continue;
-    }
-
-    fprintf(stderr, "unknown character: %c\n", current_char);
-    return NULL;
-  }
-
-  if (pos_in_token > 0) {
-    tokens[pos_in_tokens++] = as_string(current_token, pos_in_token);
-    (*num_tokens)++;
-  }
-
-  return tokens;
-}
-
-// const char **split_args(char *line, int *num_tokens) {
-//   const char **tokens = (const char **)malloc(MAX_TOKENS * sizeof(char **));
-//   int position = 0;
-//   char *token;
-
-//   if (!tokens) {
-//     fprintf(stderr, "calculator: allocation error");
-//     exit(EXIT_FAILURE);
-//   }
-
-//   token = strtok(line, TOKEN_DELIMS);
-
-//   while (token != NULL) {
-//     if (position >= MAX_TOKENS) {
-//       // TODO: make this dynamically sizing buffer
-//       printf("Must use fewer than 30 tokens. Please try again.\n");
-//       free(tokens);
-//       return NULL;
-//     }
-
-//     tokens[position++] = token;
-//     token = strtok(NULL, TOKEN_DELIMS);
-//     (*num_tokens)++;
-//   }
-
-// #ifdef PRODUCTION_BUILD
-//   // we do not need the line anymore, so we free it
-//   free(line);
-// #endif
-//   return tokens;
-// }
 
 float calculate(const char **infix_expression, int expression_length) {
   const char **postfix_expression =
