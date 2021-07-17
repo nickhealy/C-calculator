@@ -23,6 +23,8 @@ TEST(EvalPostfix, evals_simple_expressions) {
   const char *expression5[] = {"2", "3", "^", NULL};
   const char *expression6[] = {"2", "2", "-", NULL};
   const char *expression7[] = {"2", "5", "-", NULL};
+  const char *expression8[] = {"-2", "5", "-", NULL};
+
   TEST_ASSERT_EQUAL_FLOAT(6.00, eval_postfix(expression1));
   TEST_ASSERT_EQUAL_FLOAT(9.00, eval_postfix(expression2));
   TEST_ASSERT_EQUAL_FLOAT(3.00, eval_postfix(expression3));
@@ -31,6 +33,15 @@ TEST(EvalPostfix, evals_simple_expressions) {
   TEST_ASSERT_EQUAL_FLOAT(8.00, eval_postfix(expression5));
   TEST_ASSERT_EQUAL_FLOAT(0.00, eval_postfix(expression6));
   TEST_ASSERT_EQUAL_FLOAT(-3.00, eval_postfix(expression7));
+  TEST_ASSERT_EQUAL_FLOAT(-7.00, eval_postfix(expression8));
+}
+
+TEST(EvalPostfix, evals_expresssion_with_leading_negatives) {
+  const char *expression1[] = {"3", "4", "+", "-", NULL};
+  const char *expression2[] = {"4", "+", "3", "2", "+", "-", NULL};
+
+  TEST_ASSERT_EQUAL_FLOAT(-7.00, eval_postfix(expression1));
+  TEST_ASSERT_EQUAL_FLOAT(-1.00, eval_postfix(expression2));
 }
 
 TEST(EvalPostfix, evals_complex_expressions) {

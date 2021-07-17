@@ -57,13 +57,23 @@ float eval_postfix(const char **postfix_expression) {
     if (is_num(current_token)) {
       eval_stack[stack_position++] = strtod(current_token, NULL);
     } else if (is_operator(current_token)) {
+      // if stack_position is less than two, we just return 0
+
       // do operation
-      running_total =
-          do_calculation(eval_stack[stack_position - 2],
-                         eval_stack[stack_position - 1], current_token);
-      eval_stack[stack_position - 2] = 0;
+      running_total = do_calculation(
+          (stack_position < 2 ? 0 : eval_stack[stack_position - 2]),
+          eval_stack[stack_position - 1], current_token);
+
+      if (stack_position >= 2) {
+        eval_stack[stack_position - 2] = 0;
+      }
       eval_stack[stack_position - 1] = 0;
-      stack_position -= 2;
+
+      if (stack_position >= 2) {
+        stack_position -= 2;
+      } else {
+        stack_position--;
+      }
 
       eval_stack[stack_position++] = running_total;
     } else {

@@ -20,7 +20,6 @@ char *as_string(char buffer[], int size) {
 }
 
 static const char *operators = "^*/+-";
-static const char *valid_nums = "1234567890.";
 
 static bool is_in_group(const char candidate, const char *group) {
   int i;
@@ -34,18 +33,28 @@ static bool is_in_group(const char candidate, const char *group) {
 
 bool is_operator(const char *token) { return is_in_group(*token, operators); }
 
+bool is_minus(const char candidate) { return candidate == '-'; }
+bool is_decimal(const char candidate) { return candidate == '.'; }
+
 bool is_num(const char *candidate) {
-  // for now this will work -- in the future we will want better error handling
-  // with validation, etc.
-  int i;
-  for (i = 0; candidate[i] != '\0'; ++i) {
-    if (is_in_group(candidate[i], valid_nums)) {
-      continue;
+  char curr_char;
+  int i = 0;
+  bool num_incomplete = false;
+
+  while ((curr_char = candidate[i++]) != '\0') {
+    if ((curr_char < '0' || curr_char > '9') && !is_minus(curr_char) &&
+        !is_decimal(curr_char)) {
+      return false;
     }
-    return false;
+
+    if (is_minus(curr_char) || is_decimal(curr_char)) {
+      num_incomplete = true;
+    } else {
+      num_incomplete = false;
+    }
   }
 
-  return true;
+  return num_incomplete ? false : true;
 }
 
 bool is_l_parens(const char *token) { return *token == '('; }
