@@ -57,9 +57,11 @@ const char **to_postfix(const char **infix, int length) {
       // if we have not found a left parens by now, then we had mismatched
       // parens
       if (operator_position == 0) {
+#ifdef PRODUCTION_BUILD
         fprintf(stderr,
                 "Mismatched parenthesis detected. Found \")\" without matching "
                 "\")\".\n");
+#endif
         return NULL;
       }
 
@@ -71,9 +73,11 @@ const char **to_postfix(const char **infix, int length) {
   while (operator_position > 0) {
     current_token = operator_stack[--operator_position];
     if (is_l_parens(current_token)) {
+#ifdef PRODUCTION_BUILD
       fprintf(stderr,
               "Mismatched parenthesis detected. Found \"(\" without matching "
               "\")\".\n");
+#endif
       return NULL;
     }
     output[output_position++] = current_token;

@@ -4,4 +4,5 @@
 TEST_GROUP_RUNNER(EvalPostfix) {
   RUN_TEST_CASE(EvalPostfix, evals_simple_expressions);
   RUN_TEST_CASE(EvalPostfix, evals_complex_expressions);
+  RUN_TEST_CASE(EvalPostfix, evals_expresssion_with_leading_negatives);
 }

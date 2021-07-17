@@ -16,10 +16,8 @@
    character == '*' || character == '^')
 #define is_l_parens(character) (character == '(')
 
-bool is_minus(char test);
 bool is_parens(char test);
 
-bool is_minus(char test) { return test == '-'; }
 bool is_parens(char test) { return (test == '(' || test == ')'); }
 
 bool is_valid_token(const char *curr_token, char to_add, bool neg_possible) {

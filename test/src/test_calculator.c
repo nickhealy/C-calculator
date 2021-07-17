@@ -27,11 +27,13 @@ TEST(Calculator, does_simple_calculations) {
   const char *expr_2[3] = {"2", "-", "1"};
   const char *expr_3[3] = {"2", "*", "3"};
   const char *expr_4[3] = {"2", "^", "3"};
+  const char *expr_5[] = {"-3", "-", "6"};
 
   TEST_ASSERT_EQUAL_FLOAT(1.50, calculate(expr_1, length(expr_1)));
   TEST_ASSERT_EQUAL_FLOAT(1.00, calculate(expr_2, length(expr_2)));
   TEST_ASSERT_EQUAL_FLOAT(6.00, calculate(expr_3, length(expr_3)));
   TEST_ASSERT_EQUAL_FLOAT(8.00, calculate(expr_4, length(expr_4)));
+  TEST_ASSERT_EQUAL_FLOAT(-9.00, calculate(expr_5, length(expr_5)));
 }
 
 TEST(Calculator, does_complex_calculations) {
@@ -40,10 +42,13 @@ TEST(Calculator, does_complex_calculations) {
                             "3", ")", ")", "*", "2"};
   const char *expr_3[11] = {"(", "(", "3", "+", "2", ")",
                             "^", "2", ")", "/", "2"};
+  const char *expr_4[12] = {"-", "(", "(", "3", "+", "2",
+                            ")", "^", "2", ")", "/", "2"};
 
   TEST_ASSERT_EQUAL_FLOAT(8.00, calculate(expr_1, length(expr_1)));
   TEST_ASSERT_EQUAL_FLOAT(24.00, calculate(expr_2, length(expr_2)));
   TEST_ASSERT_EQUAL_FLOAT(12.5, calculate(expr_3, length(expr_3)));
+  TEST_ASSERT_EQUAL_FLOAT(-12.5, calculate(expr_4, length(expr_4)));
 }
 
 void reset(const char **result) {
